@@ -1,0 +1,33 @@
+version: '3.9'
+
+services:
+  redis:
+    image: redis
+    container_name: redis-animalia-api
+    command: redis-server --requirepass Redis2022!
+    ports:
+      - "6378:6379"  
+  postgres:
+    image: postgres
+    container_name: postgres-animalia-api
+    volumes:
+      - ~/volumes/postgres-data/animalia:/var/lib/postgresql/data
+      - ./database/init:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_USER: 'usr_animalia'
+      POSTGRES_PASSWORD: 'animalia'
+      POSTGRES_DB: 'animalia_db'   
+    ports:
+      - 5438:5432
+#   app:
+#     build: .
+#     container_name: app-animalia-api
+#     image: app
+#     environment:
+#       PG_URL: 'postgres://user:pass@postgres:5432/postgres'
+#       RMQ_URL: 'amqp://guest:guest@rabbitmq:5672/'
+#     ports:
+#       - 8080:8080
+#     depends_on:
+#       - postgres
+#       - redis
