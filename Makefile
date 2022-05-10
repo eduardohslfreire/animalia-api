@@ -41,5 +41,9 @@ migrate-down:
 migrate-down-1:
 	migrate -path database/migrations -database "$(DB_URL)" -verbose down 1
 
+swaggo-install:
+	go install github.com/swaggo/swag/cmd/swag@latest
 
+swaggo-generate:
+	swag init
 

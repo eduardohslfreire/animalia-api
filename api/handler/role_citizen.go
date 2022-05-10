@@ -26,6 +26,16 @@ func NewRoleCitizenHandler(r *gin.RouterGroup, roleUsecase usecase.IRoleUsecase)
 }
 
 // Find ...
+// @Summary      Find all citizens
+// @Description  Find all citizens by role ID
+// @Tags         roles
+// @Produce      json
+// @Param        roles_id  path      int  true  "Role ID"
+// @Success      200       {object}  dto.CitizensBodyResponse
+// @Failure      400       {object}  errors.ErrorResponse
+// @Failure      404       {object}  errors.ErrorResponse
+// @Failure      500       {object}  errors.ErrorResponse
+// @Router       /roles/{roles_id}/citizens [get]
 func (r *RoleCitizenHandler) Find(ctx *gin.Context) {
 	roleID := new(dto.RoleIDRequest)
 	if err := ctx.ShouldBindUri(roleID); err != nil {

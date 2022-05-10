@@ -27,6 +27,16 @@ func NewCitizenRoleHandler(r *gin.RouterGroup, citizenUsecase usecase.ICitizenUs
 }
 
 // Find ...
+// @Summary      Find roles
+// @Description  Find all roles by citizen ID
+// @Tags         citizens
+// @Produce      json
+// @Param        citizen_id  path      int  true  "Citizens ID"
+// @Success      200         {object}  dto.RolesBodyResponse
+// @Failure      400         {object}  errors.ErrorResponse
+// @Failure      404         {object}  errors.ErrorResponse
+// @Failure      500         {object}  errors.ErrorResponse
+// @Router       /citizens/{citizen_id}/roles [get]
 func (cr *CitizenRoleHandler) Find(ctx *gin.Context) {
 	citizenID := new(dto.CitizenIDRequest)
 	if err := ctx.ShouldBindUri(citizenID); err != nil {
@@ -47,6 +57,19 @@ func (cr *CitizenRoleHandler) Find(ctx *gin.Context) {
 }
 
 // Associate ...
+// @Summary      Associate
+// @Description  Associate a citizen with a role
+// @Tags         citizens
+// @Accept       json
+// @Produce      json
+// @Param        citizen_id  path      int     true  "Citizen ID"
+// @Param        role_id     path      int     true  "Role ID"
+// @Success      204         {string}  string  "No content"
+// @Failure      400         {object}  errors.ErrorResponse
+// @Failure      404         {object}  errors.ErrorResponse
+// @Failure      422         {object}  errors.ErrorResponse
+// @Failure      500         {object}  errors.ErrorResponse
+// @Router       /citizens/{citizen_id}/roles/{role_id} [put]
 func (cr *CitizenRoleHandler) Associate(ctx *gin.Context) {
 	citizenRoleID := new(dto.CitizenRoleIDRequest)
 	if err := ctx.ShouldBindUri(citizenRoleID); err != nil {
@@ -63,6 +86,19 @@ func (cr *CitizenRoleHandler) Associate(ctx *gin.Context) {
 }
 
 // Disassociate ...
+// @Summary      Disassociate
+// @Description  Disassociates a citizen from a role
+// @Tags         citizens
+// @Accept       json
+// @Produce      json
+// @Param        citizen_id  path      int     true  "Citizen ID"
+// @Param        role_id     path      int     true  "Role ID"
+// @Success      204         {string}  string  "No content"
+// @Failure      400         {object}  errors.ErrorResponse
+// @Failure      404         {object}  errors.ErrorResponse
+// @Failure      422         {object}  errors.ErrorResponse
+// @Failure      500         {object}  errors.ErrorResponse
+// @Router       /citizens/{citizen_id}/roles/{role_id} [delete]
 func (cr *CitizenRoleHandler) Disassociate(ctx *gin.Context) {
 	citizenRoleID := new(dto.CitizenRoleIDRequest)
 	if err := ctx.ShouldBindUri(citizenRoleID); err != nil {

@@ -26,6 +26,16 @@ func NewRoleHandler(r *gin.RouterGroup, roleUsecase usecase.IRoleUsecase) {
 }
 
 // Find ...
+// @Summary      Find roles
+// @Description  Find roles by ID
+// @Tags         roles
+// @Produce      json
+// @Param        roles_id  path      int  true  "Role ID"
+// @Success      200       {object}  dto.RoleBodyResponse
+// @Failure      400       {object}  errors.ErrorResponse
+// @Failure      404       {object}  errors.ErrorResponse
+// @Failure      500       {object}  errors.ErrorResponse
+// @Router       /roles/{roles_id} [get]
 func (r *RoleHandler) Find(ctx *gin.Context) {
 	roleID := new(dto.RoleIDRequest)
 	if err := ctx.ShouldBindUri(roleID); err != nil {
@@ -45,6 +55,13 @@ func (r *RoleHandler) Find(ctx *gin.Context) {
 }
 
 // FindAll ...
+// @Summary      Find all roles
+// @Description  Find all roles
+// @Tags         roles
+// @Produce      json
+// @Success      200  {object}  dto.RolesBodyResponse
+// @Failure      500  {object}  errors.ErrorResponse
+// @Router       /roles [get]
 func (r *RoleHandler) FindAll(ctx *gin.Context) {
 	roles, err := r.RoleUsecase.FindAll()
 	if err != nil {

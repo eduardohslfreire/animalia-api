@@ -12,11 +12,12 @@ import (
 	"github.com/eduardohslfreire/animalia-api/config/cache"
 	"github.com/eduardohslfreire/animalia-api/config/db"
 	"github.com/eduardohslfreire/animalia-api/config/env"
-
 	"github.com/eduardohslfreire/animalia-api/infrastructure/repository"
 	"github.com/eduardohslfreire/animalia-api/pkg/logger"
 	"github.com/eduardohslfreire/animalia-api/usecase"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 // Server ...
@@ -66,6 +67,7 @@ func (s *Server) Initialize() error {
 
 	// Initializing the APIs route
 	v1 := s.Route.Group("/api/v1")
+	v1.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	handler.NewCitizenHandler(v1, citizenUsecase)
 	handler.NewCitizenRoleHandler(v1, citizenUsecase)
 	handler.NewRoleHandler(v1, roleUsecase)

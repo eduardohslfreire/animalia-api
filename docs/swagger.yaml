@@ -1,0 +1,502 @@
+basePath: /api/v1
+definitions:
+  dto.CitizenBodyResponse:
+    properties:
+      description:
+        type: string
+      has_pet_human:
+        type: boolean
+      height:
+        type: number
+      id:
+        type: integer
+      name:
+        type: string
+      photo_url:
+        type: string
+      roles:
+        items:
+          $ref: '#/definitions/dto.RoleBodyResponse'
+        type: array
+      species:
+        type: string
+      weight:
+        type: number
+    type: object
+  dto.CreateCitizenBodyRequest:
+    properties:
+      description:
+        type: string
+      has_pet_human:
+        type: boolean
+      height:
+        type: number
+      name:
+        type: string
+      photo_url:
+        type: string
+      species:
+        type: string
+      weight:
+        type: number
+    required:
+    - description
+    - height
+    - name
+    - photo_url
+    - species
+    - weight
+    type: object
+  dto.PaginationCitizenBodyResponse:
+    properties:
+      limit:
+        type: integer
+      page:
+        type: integer
+      rows:
+        items:
+          $ref: '#/definitions/dto.CitizenBodyResponse'
+        type: array
+      sort:
+        type: string
+      total_pages:
+        type: integer
+      total_rows:
+        type: integer
+    type: object
+  dto.RoleBodyResponse:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  dto.UpdateCitizenBodyRequest:
+    properties:
+      description:
+        type: string
+      has_pet_human:
+        type: boolean
+      height:
+        type: number
+      name:
+        type: string
+      photo_url:
+        type: string
+      species:
+        type: string
+      weight:
+        type: number
+    type: object
+  errors.ErrorResponse:
+    properties:
+      details: {}
+      message:
+        type: string
+      status_code:
+        type: integer
+    type: object
+host: localhost:5000
+info:
+  contact:
+    email: eduardofreire1995@outlook.com
+    name: Eduardo Freire
+    url: https://www.linkedin.com/in/edudufreire/
+  description: This is a sample server API to control animalia kingdom
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Animalia API
+  version: 1.0.0
+paths:
+  /citizens:
+    get:
+      description: Find all citizens by filters
+      parameters:
+      - description: Citizen name
+        example: Eduardo
+        in: query
+        name: name
+        type: string
+      - description: Species
+        example: cat
+        in: query
+        name: species
+        type: string
+      - description: Description
+        example: Happy Feline
+        in: query
+        name: description
+        type: string
+      - description: Has pet human
+        example: false
+        in: query
+        name: has_pet_human
+        type: boolean
+      - default: id
+        description: Sort by
+        in: query
+        name: sort
+        type: string
+      - default: 1
+        description: Number page
+        in: query
+        name: page
+        type: integer
+      - description: Limit rows by page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.PaginationCitizenBodyResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+      summary: Find all citizens
+      tags:
+      - citizens
+    post:
+      consumes:
+      - application/json
+      description: Create a new citizens
+      parameters:
+      - description: Citizen data
+        in: body
+        name: citizen
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateCitizenBodyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.CitizenBodyResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+      summary: Create citizens
+      tags:
+      - citizens
+  /citizens/{citizen_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete citizen by ID
+      parameters:
+      - description: Citizen ID
+        in: path
+        name: citizen_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/dto.CitizenBodyResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+      summary: Delete citizens
+      tags:
+      - citizens
+    get:
+      description: Find citizens by ID
+      parameters:
+      - description: Citizen ID
+        in: path
+        name: citizen_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.CitizenBodyResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+      summary: Find citizens
+      tags:
+      - citizens
+    put:
+      consumes:
+      - application/json
+      description: Update citizen by ID
+      parameters:
+      - description: Citizen ID
+        in: path
+        name: citizen_id
+        required: true
+        type: integer
+      - description: Citizen data
+        in: body
+        name: citizen
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateCitizenBodyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.CitizenBodyResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+      summary: Update citizens
+      tags:
+      - citizens
+  /citizens/{citizen_id}/roles:
+    get:
+      description: Find all roles by citizen ID
+      parameters:
+      - description: Citizens ID
+        in: path
+        name: citizen_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.RoleBodyResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+      summary: Find roles
+      tags:
+      - citizens
+  /citizens/{citizen_id}/roles/{role_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Disassociates a citizen from a role
+      parameters:
+      - description: Citizen ID
+        in: path
+        name: citizen_id
+        required: true
+        type: integer
+      - description: Role ID
+        in: path
+        name: role_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No content
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+      summary: Disassociate
+      tags:
+      - citizens
+    put:
+      consumes:
+      - application/json
+      description: Associate a citizen with a role
+      parameters:
+      - description: Citizen ID
+        in: path
+        name: citizen_id
+        required: true
+        type: integer
+      - description: Role ID
+        in: path
+        name: role_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No content
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+      summary: Associate
+      tags:
+      - citizens
+  /roles:
+    get:
+      description: Find all roles
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.RoleBodyResponse'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+      summary: Find all roles
+      tags:
+      - roles
+  /roles/{roles_id}:
+    get:
+      description: Find roles by ID
+      parameters:
+      - description: Role ID
+        in: path
+        name: roles_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.RoleBodyResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+      summary: Find roles
+      tags:
+      - roles
+  /roles/{roles_id}/citizens:
+    get:
+      description: Find all citizens by role ID
+      parameters:
+      - description: Role ID
+        in: path
+        name: roles_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.CitizenBodyResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+      summary: Find all citizens
+      tags:
+      - roles
+swagger: "2.0"

@@ -34,6 +34,16 @@ func NewCitizenHandler(r *gin.RouterGroup, citizenUsecase usecase.ICitizenUsecas
 }
 
 // Find ...
+// @Summary      Find citizens
+// @Description  Find citizens by ID
+// @Tags         citizens
+// @Produce      json
+// @Param        citizen_id  path      int                           true  "Citizen ID"
+// @Success      200      {object}  dto.CitizenBodyResponse
+// @Failure      400      {object}  errors.ErrorResponse
+// @Failure      404         {object}  errors.ErrorResponse
+// @Failure      500      {object}  errors.ErrorResponse
+// @Router       /citizens/{citizen_id} [get]
 func (c *CitizenHandler) Find(ctx *gin.Context) {
 	citizenID := new(dto.CitizenIDRequest)
 	if err := ctx.ShouldBindUri(citizenID); err != nil {
@@ -53,6 +63,22 @@ func (c *CitizenHandler) Find(ctx *gin.Context) {
 }
 
 // FindAllByFilter ...
+// @Summary      Find all citizens
+// @Description  Find all citizens by filters
+// @Tags         citizens
+// @Produce      json
+// @Param        name           query     string  false  "Citizen name"        example(Eduardo)
+// @Param        species        query     string  false  "Species"             example(cat)
+// @Param        description    query     string  false  "Description"         example(Happy Feline)
+// @Param        has_pet_human  query     bool    false  "Has pet human"       example(false)
+// @Param        sort           query     string  false  "Sort by"             default(id)
+// @Param        page           query     int     false  "Number page"         default(1)
+// @Param        limit          query     int     false  "Limit rows by page"  default(10
+// @Success      200            {object}  dto.PaginationCitizenBodyResponse
+// @Failure      400            {object}  errors.ErrorResponse
+// @Failure      404            {object}  errors.ErrorResponse
+// @Failure      500            {object}  errors.ErrorResponse
+// @Router       /citizens [get]
 func (c *CitizenHandler) FindAllByFilter(ctx *gin.Context) {
 	citizenParams := new(dto.FindAllCitizensQueryParamsRequest)
 	if err := ctx.ShouldBindQuery(citizenParams); err != nil {
@@ -77,6 +103,16 @@ func (c *CitizenHandler) FindAllByFilter(ctx *gin.Context) {
 }
 
 // Create ...
+// @Summary      Create citizens
+// @Description  Create a new citizens
+// @Tags         citizens
+// @Accept       json
+// @Produce      json
+// @Param        citizen  body      dto.CreateCitizenBodyRequest  true  "Citizen data"
+// @Success      200         {object}  dto.CitizenBodyResponse
+// @Failure      400         {object}  errors.ErrorResponse
+// @Failure      500         {object}  errors.ErrorResponse
+// @Router       /citizens [post]
 func (c *CitizenHandler) Create(ctx *gin.Context) {
 	citizenDTO := new(dto.CreateCitizenBodyRequest)
 	if err := ctx.ShouldBindJSON(citizenDTO); err != nil {
@@ -100,6 +136,18 @@ func (c *CitizenHandler) Create(ctx *gin.Context) {
 }
 
 // Update ...
+// @Summary      Update citizens
+// @Description  Update citizen by ID
+// @Tags         citizens
+// @Accept       json
+// @Produce      json
+// @Param        citizen_id  path      int  true  "Citizen ID"
+// @Param        citizen     body      dto.UpdateCitizenBodyRequest  true  "Citizen data"
+// @Success      200         {object}  dto.CitizenBodyResponse
+// @Failure      400         {object}  errors.ErrorResponse
+// @Failure      404         {object}  errors.ErrorResponse
+// @Failure      500         {object}  errors.ErrorResponse
+// @Router       /citizens/{citizen_id} [put]
 func (c *CitizenHandler) Update(ctx *gin.Context) {
 	citizenID := new(dto.CitizenIDRequest)
 	if err := ctx.ShouldBindUri(citizenID); err != nil {
@@ -129,6 +177,17 @@ func (c *CitizenHandler) Update(ctx *gin.Context) {
 }
 
 // Delete ...
+// @Summary      Delete citizens
+// @Description  Delete citizen by ID
+// @Tags         citizens
+// @Accept       json
+// @Produce      json
+// @Param        citizen_id  path      int  true  "Citizen ID"
+// @Success      204         {object}  dto.CitizenBodyResponse
+// @Failure      400         {object}  errors.ErrorResponse
+// @Failure      404         {object}  errors.ErrorResponse
+// @Failure      500         {object}  errors.ErrorResponse
+// @Router       /citizens/{citizen_id} [delete]
 func (c *CitizenHandler) Delete(ctx *gin.Context) {
 	citizenID := new(dto.CitizenIDRequest)
 	if err := ctx.ShouldBindUri(citizenID); err != nil {
