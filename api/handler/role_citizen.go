@@ -17,11 +17,12 @@ type RoleCitizenHandler struct {
 }
 
 // NewRoleCitizenHandler ...
-func NewRoleCitizenHandler(roleUsecase usecase.IRoleUsecase) *RoleCitizenHandler {
-	return &RoleCitizenHandler{
+func NewRoleCitizenHandler(r *gin.RouterGroup, roleUsecase usecase.IRoleUsecase) {
+	handler := &RoleCitizenHandler{
 		RoleUsecase: roleUsecase,
 		Logger:      logger.NewLogger(),
 	}
+	r.GET("/roles/:role_id/citizens", handler.Find)
 }
 
 // Find ...

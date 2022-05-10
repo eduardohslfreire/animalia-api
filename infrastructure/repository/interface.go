@@ -32,5 +32,5 @@ type IRedisRepository interface {
 	SetValue(string, interface{}, int)
 	DeleteValue(key string)
 	Lock(string) (*redsync.Mutex, error)
-	Unlock(*redsync.Mutex) (bool, error)
+	Unlock(*redsync.Mutex) error
 }

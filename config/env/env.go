@@ -5,58 +5,58 @@ import (
 )
 
 var (
-	// AppPort porta da aplicação
+	// AppPort application port
 	AppPort string
 
-	// HTTPReadTimeout timeout em segundos para a api (read)
+	// HTTPReadTimeout timeout in seconds for api (read)
 	HTTPReadTimeout int
 
-	// HTTPRequestTimeout timeout em segundos para a api (requests)
+	// HTTPRequestTimeout timeout in seconds for api (requests)
 	HTTPRequestTimeout int
 
-	// HTTPWriteTimeout timeout em segundos para a api (write)
+	// HTTPWriteTimeout timeout in seconds for api (write)
 	HTTPWriteTimeout int
 
-	// DbUser usuário de aplicação do banco de dados
+	// DbUser database application user
 	DbUser string
 
-	// DbPassword senha do usuário da aplicação do banco de dados
+	// DbPassword database application user password
 	DbPassword string
 
-	// DbName nome do banco de dados
+	// DbName database name
 	DbName string
 
-	// DbHost hostname do banco de dados
+	// DbHost database hostname
 	DbHost string
 
-	// DbPort porta do banco de dados
+	// DbPort database port
 	DbPort int
 
-	// DbTimeZone timezone do banco de dados
+	// DbTimeZone database timezone
 	DbTimeZone string
 
-	// DbMaxIdleConns número máximo de conexões inativas no banco de dados
+	// DbMaxIdleConns maximum number of idle connections in the database
 	DbMaxIdleConns int
 
-	// DbMaxOpenConns número máximo de conexões abertas no banco de dados
+	// DbMaxOpenConns maximum number of open connections in the database
 	DbMaxOpenConns int
 
-	// DbConnMaxLifeTime tempo máximo para que uma conexão inativas pode ser reutilizada em segundos
+	// DbConnMaxLifeTime maximum time for which an idle connection can be reused in seconds
 	DbConnMaxLifeTime int
 
-	// LogLevel determina o log level a ser exibido no stdout (controle da severidade do log): DEBUG, ERROR, FATAL, INFO PANIC ou WARN
+	// LogLevel determines the log level to be displayed in the stdout: DEBUG, ERROR, FATAL, INFO PANIC ou WARN
 	LogLevel string
 
-	// PrometheusPushGateway endereço do Prometheus para envio das metricas
+	// PrometheusPushGateway Prometheus address for sending metrics
 	PrometheusPushGateway string
 
-	// RedisExpirationHours tempo de expiração dos dados, em horas, na memória do Redis
+	// RedisExpirationHours data expiration time, in hours, in Redis memory
 	RedisExpirationHours int
 
-	// RedisHost nome do host da base de dados Redis
+	// RedisHost cache server hostname
 	RedisHost string
 
-	// RedisPassword senha da base de dados Redis
+	// RedisPassword cache server password
 	RedisPassword string
 )
 

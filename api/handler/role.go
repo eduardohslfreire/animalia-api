@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/eduardohslfreire/animalia-api/api/dto"
+	"github.com/eduardohslfreire/animalia-api/api/errors"
 	"github.com/eduardohslfreire/animalia-api/pkg/logger"
 	"github.com/eduardohslfreire/animalia-api/usecase"
 	"github.com/gin-gonic/gin"
@@ -15,18 +16,20 @@ type RoleHandler struct {
 }
 
 // NewRoleHandler ...
-func NewRoleHandler(roleUsecase usecase.IRoleUsecase) *RoleHandler {
-	return &RoleHandler{
+func NewRoleHandler(r *gin.RouterGroup, roleUsecase usecase.IRoleUsecase) {
+	handler := &RoleHandler{
 		RoleUsecase: roleUsecase,
 		Logger:      logger.NewLogger(),
 	}
+	r.GET("/roles", handler.FindAll)
+	r.GET("/roles/:role_id", handler.Find)
 }
 
 // Find ...
 func (r *RoleHandler) Find(ctx *gin.Context) {
 	roleID := new(dto.RoleIDRequest)
 	if err := ctx.ShouldBindUri(roleID); err != nil {
-		ctx.Error(err)
+		ctx.Error(errors.BadRequest("Invalid ID"))
 		return
 	}
 	role, err := r.RoleUsecase.FindByID(roleID.ID)

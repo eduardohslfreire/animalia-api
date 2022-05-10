@@ -27,7 +27,7 @@ const (
 func (r *RoleName) Scan(value interface{}) error {
 	asString, ok := value.(string)
 	if !ok {
-		return fmt.Errorf("Valor nao eh do tipo string e sim %T", value)
+		return fmt.Errorf("Value is not a string type, but %T", value)
 	}
 	*r = RoleName(asString)
 	return nil

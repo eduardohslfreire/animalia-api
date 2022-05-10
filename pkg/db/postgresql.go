@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/eduardohslfreire/animalia-api/pkg/logger"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
@@ -12,6 +13,7 @@ import (
 // Postgresql ...
 type Postgresql struct {
 	Database
+	Logger *logger.GenericLogger
 }
 
 // Open represent a factory of database.
@@ -19,6 +21,8 @@ type Postgresql struct {
 func (p *Postgresql) Open() (*gorm.DB, error) {
 	var err error
 	var db *gorm.DB
+
+	p.Logger = logger.NewGenericLogger()
 
 	connectionString := p.GetDNS()
 
@@ -30,19 +34,11 @@ func (p *Postgresql) Open() (*gorm.DB, error) {
 		NowFunc: func() time.Time {
 			return time.Now().Local()
 		},
-		/*
-			uncomment to debug
-
-			Logger: logger.New(
-				log.New(os.Stdout, "\r\n", log.LstdFlags),
-				logger.Config{
-					LogLevel: logger.Info, // Log level Info will output everything
-				},
-			),*/
 	})
 
 	p.DB, err = db.DB()
 	if err != nil {
+		p.Logger.LogIt("ERROR", fmt.Sprintf("[DATABASE-SESSION-ERROR] - Failed to get session with database. %s", err.Error()), nil)
 		return nil, err
 	}
 
@@ -53,10 +49,12 @@ func (p *Postgresql) Open() (*gorm.DB, error) {
 	// SetConnMaxLifetime sets the maximum amount of time a connection may be reused.
 	p.DB.SetConnMaxLifetime(time.Second * time.Duration(p.ConnMaxLifetime))
 
+	p.Logger.LogIt("INFO", "[DATABASE-INIT] - Connection to database started", nil)
+
 	return db, err
 }
 
-// GetDNS representa a recuperação do acesso ao banco
+// GetDNS ...
 func (p *Postgresql) GetDNS() string {
 	return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable TimeZone=%s", p.Host, p.Port, p.User, p.Password, p.Name, p.TimeZone)
 }

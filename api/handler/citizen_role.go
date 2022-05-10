@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/eduardohslfreire/animalia-api/api/dto"
+	"github.com/eduardohslfreire/animalia-api/api/errors"
 	"github.com/eduardohslfreire/animalia-api/pkg/logger"
 	"github.com/eduardohslfreire/animalia-api/usecase"
 	"github.com/gin-gonic/gin"
@@ -15,18 +16,21 @@ type CitizenRoleHandler struct {
 }
 
 // NewCitizenRoleHandler ...
-func NewCitizenRoleHandler(citizenUsecase usecase.ICitizenUsecase) *CitizenRoleHandler {
-	return &CitizenRoleHandler{
+func NewCitizenRoleHandler(r *gin.RouterGroup, citizenUsecase usecase.ICitizenUsecase) {
+	handler := &CitizenRoleHandler{
 		CitizenUsecase: citizenUsecase,
 		Logger:         logger.NewLogger(),
 	}
+	r.GET("/citizens/:citizen_id/roles", handler.Find)
+	r.PUT("/citizens/:citizen_id/roles/:role_id", handler.Associate)
+	r.DELETE("/citizens/:citizen_id/roles/:role_id", handler.Disassociate)
 }
 
 // Find ...
 func (cr *CitizenRoleHandler) Find(ctx *gin.Context) {
 	citizenID := new(dto.CitizenIDRequest)
 	if err := ctx.ShouldBindUri(citizenID); err != nil {
-		ctx.Error(err)
+		ctx.Error(errors.BadRequest("Invalid ID"))
 		return
 	}
 
@@ -46,7 +50,7 @@ func (cr *CitizenRoleHandler) Find(ctx *gin.Context) {
 func (cr *CitizenRoleHandler) Associate(ctx *gin.Context) {
 	citizenRoleID := new(dto.CitizenRoleIDRequest)
 	if err := ctx.ShouldBindUri(citizenRoleID); err != nil {
-		ctx.Error(err)
+		ctx.Error(errors.BadRequest("Invalid ID"))
 		return
 	}
 
@@ -62,7 +66,7 @@ func (cr *CitizenRoleHandler) Associate(ctx *gin.Context) {
 func (cr *CitizenRoleHandler) Disassociate(ctx *gin.Context) {
 	citizenRoleID := new(dto.CitizenRoleIDRequest)
 	if err := ctx.ShouldBindUri(citizenRoleID); err != nil {
-		ctx.Error(err)
+		ctx.Error(errors.BadRequest("Invalid ID"))
 		return
 	}
 

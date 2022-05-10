@@ -22,18 +22,22 @@ type CitizenHandler struct {
 }
 
 // NewCitizenHandler ...
-func NewCitizenHandler(citizenUsecase usecase.ICitizenUsecase) *CitizenHandler {
-	return &CitizenHandler{
+func NewCitizenHandler(r *gin.RouterGroup, citizenUsecase usecase.ICitizenUsecase) {
+	handler := &CitizenHandler{
 		CitizenUsecase: citizenUsecase,
-		Logger:         logger.NewLogger(),
 	}
+	r.POST("/citizens", handler.Create)
+	r.GET("/citizens", handler.FindAllByFilter)
+	r.GET("/citizens/:citizen_id", handler.Find)
+	r.PUT("/citizens/:citizen_id", handler.Update)
+	r.DELETE("/citizens/:citizen_id", handler.Delete)
 }
 
 // Find ...
 func (c *CitizenHandler) Find(ctx *gin.Context) {
 	citizenID := new(dto.CitizenIDRequest)
 	if err := ctx.ShouldBindUri(citizenID); err != nil {
-		ctx.Error(err)
+		ctx.Error(errors.BadRequest("Invalid ID"))
 		return
 	}
 	citizen, err := c.CitizenUsecase.Find(citizenID.ID)
@@ -52,7 +56,7 @@ func (c *CitizenHandler) Find(ctx *gin.Context) {
 func (c *CitizenHandler) FindAllByFilter(ctx *gin.Context) {
 	citizenParams := new(dto.FindAllCitizensQueryParamsRequest)
 	if err := ctx.ShouldBindQuery(citizenParams); err != nil {
-		ctx.Error(errors.BadRequest("Invalid ID"))
+		ctx.Error(err)
 		return
 	}
 	pagination := new(dto_model.Pagination)
@@ -99,7 +103,7 @@ func (c *CitizenHandler) Create(ctx *gin.Context) {
 func (c *CitizenHandler) Update(ctx *gin.Context) {
 	citizenID := new(dto.CitizenIDRequest)
 	if err := ctx.ShouldBindUri(citizenID); err != nil {
-		ctx.Error(err)
+		ctx.Error(errors.BadRequest("Invalid ID"))
 		return
 	}
 
@@ -128,7 +132,7 @@ func (c *CitizenHandler) Update(ctx *gin.Context) {
 func (c *CitizenHandler) Delete(ctx *gin.Context) {
 	citizenID := new(dto.CitizenIDRequest)
 	if err := ctx.ShouldBindUri(citizenID); err != nil {
-		ctx.Error(err)
+		ctx.Error(errors.BadRequest("Invalid ID"))
 		return
 	}
 

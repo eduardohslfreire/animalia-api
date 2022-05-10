@@ -6,8 +6,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/eduardohslfreire/animalia-api/api/handler"
 	"github.com/eduardohslfreire/animalia-api/api/middleware"
-	v1 "github.com/eduardohslfreire/animalia-api/api/v1"
 	"github.com/eduardohslfreire/animalia-api/api/validation"
 	"github.com/eduardohslfreire/animalia-api/config/cache"
 	"github.com/eduardohslfreire/animalia-api/config/db"
@@ -27,51 +27,49 @@ type Server struct {
 
 // Initialize ...
 func (s *Server) Initialize() error {
-	// Inicializando componentes do Log
+	// Initializing log components
 	s.Logger = logger.NewGenericLogger()
 
+	// Initializing database
 	database, err := db.InitDatabase()
 	if err != nil {
 		return err
 	}
 
+	// Initializing cache server
 	cache, err := cache.InitCache()
 	if err != nil {
 		return err
 	}
 
-	// Inicializando os repositórios
+	// Initializing the repositories
 	redisRepository := repository.NewRedisRepository(cache)
 
 	citizenRepository := repository.NewCitizenRepository(database)
 	roleRepository := repository.NewRoleRepository(database)
 
-	// Inicializando os serviços
+	// Initializing the usecases
 	citizenUsecase := usecase.NewCitizenUsecase(citizenRepository, roleRepository, redisRepository)
 	roleUsecase := usecase.NewRoleUsecase(roleRepository)
 
-	// Inicializando rota
+	// Initializing the routes
 	s.Route = gin.New()
 
-	// Middleware
+	// Adding middlewares
 	m := middleware.InitMiddleware()
 	s.Route.Use(gin.Recovery())
 	s.Route.Use(m.CORSMiddleware())
+	s.Route.Use(m.ErrorMiddleware())
 
+	// Adding custom messages to field validations
 	validation.RegisterCustomValidations()
 
-	// prometheusService, err := metric.NewPrometheusService()
-	// if err != nil {
-	// 	return err
-	// }
-	// s.Route.Use(m.MetricMiddleware(prometheusService))
-
-	//s.Route.Static("/docs", "swaggerui")
-	routerGroup := s.Route.Group("/api/v1")
-	routerGroup.Use(m.ErrorMiddleware())
-
-	// Inicializando a rota das APIs
-	v1.InitRouting(routerGroup, citizenUsecase, roleUsecase)
+	// Initializing the APIs route
+	v1 := s.Route.Group("/api/v1")
+	handler.NewCitizenHandler(v1, citizenUsecase)
+	handler.NewCitizenRoleHandler(v1, citizenUsecase)
+	handler.NewRoleHandler(v1, roleUsecase)
+	handler.NewRoleCitizenHandler(v1, roleUsecase)
 
 	return nil
 }
@@ -79,7 +77,7 @@ func (s *Server) Initialize() error {
 // StartServer ...
 func (s *Server) StartServer() {
 	if err := s.Initialize(); err != nil {
-		s.Logger.LogIt("ERROR", fmt.Sprintf("[SERVER-START-ERROR] - Erro ao iniciar o servidor. Motivo: %s", err.Error()), nil)
+		s.Logger.LogIt("ERROR", fmt.Sprintf("[SERVER-START-ERROR] - Failed to start the server. %s", err.Error()), nil)
 	}
 
 	httpServer := &http.Server{
@@ -89,9 +87,9 @@ func (s *Server) StartServer() {
 		Handler:      s.Route,
 	}
 
-	s.Logger.LogIt("INFO", fmt.Sprintf("[SERVER-START] - Iniciando servidor na porta %s", env.AppPort), nil)
+	s.Logger.LogIt("INFO", fmt.Sprintf("[SERVER-START] - Starting server on port - %s", env.AppPort), nil)
 	if err := httpServer.ListenAndServe(); err != nil {
-		s.Logger.LogIt("ERROR", fmt.Sprintf("[SERVER-START-ERROR] - Erro ao iniciar o servidor. Motivo: %s", err.Error()), nil)
+		s.Logger.LogIt("ERROR", fmt.Sprintf("[SERVER-LISTEN-ERROR] - Failed at server to listen on port %s. %s", env.AppPort, err.Error()), nil)
 		os.Exit(1)
 	}
 }

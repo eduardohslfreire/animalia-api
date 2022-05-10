@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 
 	http_errors "github.com/eduardohslfreire/animalia-api/api/errors"
@@ -21,13 +22,18 @@ func (m *Middleware) ErrorMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		errResponse := buildErrorResponse(c.Errors[0].Err)
+		errResponse := m.buildErrorResponse(c.Errors[0].Err)
+
+		m.Logger.LogIt("INFO", fmt.Sprintf("[HANDLE-HTTP-RESPONSE-ERROR] - Request: [%s] - [%s] | Response: [%d] - [%s]", c.Request.Method, c.Request.URL.RequestURI(), errResponse.StatusCode(), errResponse.Message), nil)
+
 		c.JSON(errResponse.StatusCode(), errResponse)
 	}
 }
 
-func buildErrorResponse(err error) http_errors.ErrorResponse {
+func (m *Middleware) buildErrorResponse(err error) http_errors.ErrorResponse {
 	switch err.(type) {
+	case http_errors.ErrorResponse:
+		return err.(http_errors.ErrorResponse)
 	case validator.ValidationErrors:
 		return http_errors.BadRequest(extractMessageValidationErrors(err))
 	case business_errors.BusinessError:
