@@ -130,7 +130,7 @@ $ make run
 Executar o migrate para popular a base de dados com os DDL e DMLs
 ```shell
 # Caso não tenha instalado, rodar esse comando antes
-$ make migrate-up
+$ make migrate-install
 # Comando de migrate
 $ make migrate-up
 ```
