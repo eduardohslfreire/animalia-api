@@ -21,7 +21,7 @@ Este projeto é reponsável por gerenciar as informações de identificação de
 * [go-redsync](https://github.com/go-redsync) - Implementação de Lock distribuído com Redis em Go
 * [postgres](https://github.com/lib/pq) - Postgres driver
 * [swag](https://github.com/swaggo/swag) - Documentação OpenAPI
-* [SQlmock](https://github.com/DATA-DOG/go-sqlmock) - Sql driver mock para Golang. 
+* [SQlmock](https://github.com/DATA-DOG/go-sqlmock) - Sql driver mock para Golang
 * [gorm](https://gorm.io/index.html) - Framework para manipulação do banco de dados
 
 ## Instalação
@@ -69,19 +69,16 @@ Configurando as variáveis de ambiente
 │   ├── errors
 │   ├── handler
 │   ├── middleware
-│   ├── server.go
 │   └── validation
+│   └── server.go
 ├── config
 │   ├── cache
 │   ├── db
 │   └── env
-├── cover.html
-├── cover.out
 ├── database
 │   ├── init
 │   └── migrations
 ├── dev
-│   └── env.dev
 ├── docker-compose.yml
 ├── Dockerfile
 ├── docs
@@ -101,7 +98,6 @@ Configurando as variáveis de ambiente
 ├── util
 
 ```
-
 Uma breve descrição dos diretórios:
 * `api` contém artefatos para iniciar a API e servir como delivery para os clientes que a utilizam
 * `database` contém os scripts executados no banco de dados. (Inicial e migrações)
@@ -112,6 +108,7 @@ Uma breve descrição dos diretórios:
 * `pkg` contém todos os pacotes de suporte externo.
 * `usecase` contém todas as regras de negócios. Qualquer processo será tratado aqui. Essa camada decidirá qual camada de repositório usará.
 * `util` contém as funcões utilitárias que são utilizadas por diversos módulos do sistema.
+* `docs` contém a documentação openAPI gerada pela ferramenta de swagger.
 * `.gitignore` contém todos os arquivos e diretórios ignorados.
 * `Makefile` é usado para construir o projeto, possui utilitários de forma organizada que abstrai a execução de vários comandos do shell.
 * `go.mod` contém todos as dependências do projeto.
@@ -128,7 +125,14 @@ $ make setup-dev-up
 ```
 Compilar e subir o APP
 ```
-make run
+$ make run
+```
+Executar o migrate para popular a base de dados com os DDL e DMLs
+```shell
+# Caso não tenha instalado, rodar esse comando antes
+$ make migrate-up
+# Comando de migrate
+$ make migrate-up
 ```
 ## Testes
 ```bash
