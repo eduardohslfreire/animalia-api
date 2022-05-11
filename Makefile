@@ -47,3 +47,6 @@ swaggo-install:
 swaggo-generate:
 	swag init
 
+swaggo-format:
+	swag fmt
+
