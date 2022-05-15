@@ -9,6 +9,9 @@
 * [Arquitetura de pastas](#arquitetura-de-pastas)
 * [Iniciando](#iniciando)
 * [Testes](#testes)
+* [Testes de carga](#testes-de-carga)
+* [Monitorando aplicação](#monitorando-aplicação)
+* [Documentação](#documentação)
 
 ## Informação
 Este projeto é reponsável por gerenciar as informações de identificação de cada cidadão pertencente à Federação Animalia
@@ -23,6 +26,10 @@ Este projeto é reponsável por gerenciar as informações de identificação de
 * [swag](https://github.com/swaggo/swag) - Documentação OpenAPI
 * [SQlmock](https://github.com/DATA-DOG/go-sqlmock) - Sql driver mock para Golang
 * [gorm](https://gorm.io/index.html) - Framework para manipulação do banco de dados
+* [golang-migrate](https://github.com/golang-migrate/migrate) - Ferramenta de migração de banco de dados em Go
+* [k6](https://k6.io/) - Ferramenta para testes de carga
+* [Grafana](https://grafana.com/) - Ferramenta para construção de dashboards para visualização das métricas
+* [Prometheus](https://prometheus.io/) - Ferramenta para coletar métricas da aplicação
 
 ## Instalação
 Clonar o projeto
@@ -82,6 +89,7 @@ Configurando as variáveis de ambiente
 ├── docker-compose.yml
 ├── Dockerfile
 ├── docs
+├── k6
 ├── entity
 ├── infrastructure
 │   └── repository
@@ -109,6 +117,7 @@ Uma breve descrição dos diretórios:
 * `usecase` contém todas as regras de negócios. Qualquer processo será tratado aqui. Essa camada decidirá qual camada de repositório usará.
 * `util` contém as funcões utilitárias que são utilizadas por diversos módulos do sistema.
 * `docs` contém a documentação openAPI gerada pela ferramenta de swagger.
+* `k6` contém os scripts utilizados nos testes de carga.
 * `.gitignore` contém todos os arquivos e diretórios ignorados.
 * `Makefile` é usado para construir o projeto, possui utilitários de forma organizada que abstrai a execução de vários comandos do shell.
 * `go.mod` contém todos as dependências do projeto.
@@ -123,10 +132,6 @@ Subir os serviços locais configurados no docker-compose
 ```
 $ make setup-dev-up
 ```
-Compilar e subir o APP
-```
-$ make run
-```
 Executar o migrate para popular a base de dados com os DDL e DMLs
 ```shell
 # Caso não tenha instalado, rodar esse comando antes
@@ -134,12 +139,44 @@ $ make migrate-install
 # Comando de migrate
 $ make migrate-up
 ```
+Compilar e subir o APP
+```
+$ make run
+```
+
 ## Testes
 ```bash
 $ make cover
 ```
 
-## Swagger
+## Testes de carga
+
+Para executar o testes de carga, utilizamos o [k6](https://k6.io/). É necessário [instalar o K6](https://k6.io/docs/getting-started/installation) e após instalado, executar o comando:
+
+```bash
+# Teste de leitura
+k6 run  k6/script-to-test-read.js
+
+# Teste de escrita
+k6 run  k6/script-to-test-write.js
+```
+
+O tempo de execução do K6 e quantidade de 'execuções' é configurável, basta alterar os scripts para testes de carga de [leitura](/k6/script-to-test-read.js) e [escrita](/k6/script-to-test-write.js).
+
+## Monitorando aplicação
+
+### Observabilidade
+Para saber como a aplicação está se comportando e o obter métricas, estamos utilizando a combinação poderosa entre o [Grafana](https://grafana.com/) e o [Prometheus](https://prometheus.io/).
+
+Acessando o [Grafana Local](http://localhost:3000) já basta navegar até o dashboard pré-cadastrado e ter uma amostrado dos dados da aplicação e das ferramentas.
+- http://localhost:3000
+    - login: *admin*
+    - senha: *admin*
+
+Já o [Prometheus Local](http://localhost:9090) só acessar o link (sem login):
+- http://localhost:9090
+
+## Documentação
 #### Swagger é uma ferramenta para a documentação do contrato das APIs.
 Instalação
 ```shell

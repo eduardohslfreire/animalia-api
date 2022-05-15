@@ -2,9 +2,12 @@ package api
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/eduardohslfreire/animalia-api/api/handler"
 	"github.com/eduardohslfreire/animalia-api/api/middleware"
@@ -14,6 +17,7 @@ import (
 	"github.com/eduardohslfreire/animalia-api/config/env"
 	"github.com/eduardohslfreire/animalia-api/infrastructure/repository"
 	"github.com/eduardohslfreire/animalia-api/pkg/logger"
+	"github.com/eduardohslfreire/animalia-api/pkg/metric"
 	"github.com/eduardohslfreire/animalia-api/usecase"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -56,10 +60,20 @@ func (s *Server) Initialize() error {
 	// Initializing the routes
 	s.Route = gin.New()
 
+	// Initializing metric collector
+	metricService, err := metric.NewPrometheusService()
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
 	// Adding middlewares
 	m := middleware.InitMiddleware()
 	s.Route.Use(gin.Recovery())
 	s.Route.Use(m.CORSMiddleware())
+	s.Route.Use(m.MetricMiddleware(metricService))
+
+	s.Route.Any("/metrics", gin.WrapH(promhttp.Handler()))
+
 	s.Route.Use(m.ErrorMiddleware())
 
 	// Adding custom messages to field validations

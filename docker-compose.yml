@@ -19,6 +19,49 @@ services:
       POSTGRES_DB: 'animalia_db'   
     ports:
       - 5438:5432
+  grafana:
+    image: grafana/grafana:latest
+    user: "1001"
+    expose:
+      - 3000
+    container_name: animalia-grafana
+    volumes:
+      - ~/volumes/grafana-data/animalia:/var/lib/grafana
+      - ./dev/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./dev/grafana/datasources:/etc/grafana/provisioning/datasources
+    environment:
+      - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    restart: unless-stopped
+    network_mode: host
+    depends_on:
+      - prometheus
+      - prometheus-pushgateway
+  prometheus:
+    image: prom/prometheus:v2.21.0
+    user: "1001"
+    expose:
+      - 9090
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.console.libraries=/etc/prometheus/console_libraries
+      - --web.console.templates=/etc/prometheus/consoles
+      - --storage.tsdb.retention.time=200h
+      - --web.enable-lifecycle
+    volumes:
+      - ./dev/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ~/volumes/prometheus-data/animalia:/prometheus
+    container_name: animalia-prometheus
+    restart: unless-stopped
+    network_mode: host
+  prometheus-pushgateway:
+    image: prom/pushgateway:latest
+    container_name: animalia-pushgateway
+    network_mode: host
+    expose:
+      - 9091
 #   app:
 #     build: .
 #     container_name: app-animalia-api
